@@ -68,6 +68,7 @@ def scrape_austin_jobs(
         if df is None or df.empty:
             continue
 
+        df = df.fillna("")
         for _, row in df.iterrows():
             job = _row_to_dict(row.to_dict())
             if not job or job["url"] in seen_urls:
