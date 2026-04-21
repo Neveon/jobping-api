@@ -39,7 +39,7 @@ def scrape_austin_jobs(
     *,
     search_terms: list[str] | None = None,
     location: str = DEFAULT_LOCATION,
-    hours_old: int = 168,
+    hours_old: int = 24,
     radius_miles: int = 50,
     results_per_term: int = 40,
     max_total: int = 50,
