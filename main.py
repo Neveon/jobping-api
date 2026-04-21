@@ -6,6 +6,7 @@ import re
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
+from cron import run_digest
 from db import create_user
 from emailer import send_confirmation
 from pdf_parser import extract_text
@@ -98,3 +99,12 @@ async def signup(
         print(f"[signup] confirmation email failed for {email}: {exc}", flush=True)
 
     return {"ok": True, "email": email}
+
+
+@app.post("/admin/trigger-digest")
+def trigger_digest(request: Request):
+    expected = os.environ.get("ADMIN_TOKEN", "")
+    token = request.headers.get("x-admin-token", "")
+    if not expected or token != expected:
+        raise HTTPException(401, "Unauthorized")
+    return run_digest()
