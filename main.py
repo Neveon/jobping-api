@@ -5,9 +5,10 @@ import re
 
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 
 from cron import run_digest
-from db import create_user
+from db import create_user, deactivate_by_token
 from emailer import send_confirmation
 from pdf_parser import extract_text
 from rate_limit import check_and_record
@@ -108,3 +109,21 @@ def trigger_digest(request: Request):
     if not expected or token != expected:
         raise HTTPException(401, "Unauthorized")
     return run_digest()
+
+
+def _frontend_base() -> str:
+    return origins[0].rstrip("/") if origins and origins[0] != "*" else ""
+
+
+@app.get("/unsubscribe")
+def unsubscribe(token: str = ""):
+    target_base = _frontend_base() or "https://jobping-web.vercel.app"
+    if not token:
+        return RedirectResponse(f"{target_base}/unsubscribe?status=invalid", 302)
+    try:
+        ok = deactivate_by_token(token)
+    except Exception as exc:
+        print(f"[unsubscribe] db error: {exc}", flush=True)
+        return RedirectResponse(f"{target_base}/unsubscribe?status=error", 302)
+    status = "ok" if ok else "invalid"
+    return RedirectResponse(f"{target_base}/unsubscribe?status={status}", 302)
