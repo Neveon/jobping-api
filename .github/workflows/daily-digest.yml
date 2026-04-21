@@ -1,0 +1,26 @@
+name: Daily digest
+
+on:
+  schedule:
+    # 14:00 UTC = 9am CDT (April-Oct) / 8am CST (Nov-Mar).
+    # Update to 15:00 UTC when DST ends if you want to stay at 9am Central year-round.
+    - cron: "0 14 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Call /admin/trigger-digest
+        run: |
+          set -euo pipefail
+          response=$(curl --silent --show-error --fail \
+            --max-time 300 \
+            --write-out "\nHTTP_STATUS:%{http_code}\n" \
+            -X POST \
+            -H "x-admin-token: ${ADMIN_TOKEN}" \
+            https://jobping-api-production.up.railway.app/admin/trigger-digest)
+          echo "$response"
+        env:
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
