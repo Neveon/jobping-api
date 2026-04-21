@@ -117,7 +117,7 @@ def _frontend_base() -> str:
 
 @app.get("/unsubscribe")
 def unsubscribe(token: str = ""):
-    target_base = _frontend_base() or "https://jobping-web.vercel.app"
+    target_base = _frontend_base() or "https://jobping.dev"
     if not token:
         return RedirectResponse(f"{target_base}/unsubscribe?status=invalid", 302)
     try:

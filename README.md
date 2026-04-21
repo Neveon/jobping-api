@@ -2,7 +2,7 @@
 
 FastAPI backend for **JobPing** — daily LLM-curated job digest emails.
 
-**Live**: [jobping-web.vercel.app](https://jobping-web.vercel.app) · Frontend repo: [`jobping-web`](https://github.com/Neveon/jobping-web)
+**Live**: [jobping.dev](https://jobping.dev) · Frontend repo: [`jobping-web`](https://github.com/Neveon/jobping-web)
 
 ## What it does
 
@@ -63,7 +63,3 @@ uvicorn main:app --reload
 ## Deploy
 
 Auto-deploys to Railway on push to `main`. All secrets live in Railway's Variables tab; see `.env.example` for the required list.
-
-## Notes and scope
-
-Built as a 48-hour MVP. Explicitly out of scope: auth, dashboards, job deduplication across days, vector search, multi-city selection. The LLM does fit judgment end-to-end — no keyword or rules filter.
