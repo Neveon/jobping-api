@@ -11,15 +11,25 @@ from anthropic import Anthropic
 logger = logging.getLogger(__name__)
 
 MODEL = "claude-haiku-4-5-20251001"
-MAX_DESCRIPTION_CHARS = 600
-MAX_RESUME_CHARS = 6000
+MAX_DESCRIPTION_CHARS = 2500
+MAX_RESUME_CHARS = 10000
 
 SYSTEM_PROMPT = (
     "You are a job-matching assistant. Given a candidate's resume and a list of "
     "job postings, pick the 5 jobs that best fit the candidate's experience, "
     "skills, and seniority. Return JSON of the form: "
     '{"matches": [{"index": <int>, "reasoning": "<one sentence why this matches>"}]}. '
-    "Do not include any other text."
+    "Do not include any other text.\n\n"
+    "Seniority matching is critical:\n"
+    "- Estimate the candidate's years of experience (YOE) from their resume work history.\n"
+    "- For each job, use the YOE requirement stated in the job description when present "
+    "(e.g., '5+ years', 'minimum 7 years'). If the description does not state one, infer "
+    "from the title — typical ranges: Junior/Associate 0-2 YOE, Mid/SWE II 2-5, "
+    "Senior 5-10, Staff 7-12, Principal 10+.\n"
+    "- Reject jobs that require substantially more experience than the candidate has "
+    "(e.g., a 3-YOE candidate should not match Senior/Staff/Principal roles or roles "
+    "requiring 5+ years, even when the skills overlap).\n"
+    "- Prefer roles within roughly ±2 YOE of the candidate's experience."
 )
 
 

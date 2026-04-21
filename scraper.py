@@ -41,8 +41,8 @@ def scrape_austin_jobs(
     location: str = DEFAULT_LOCATION,
     hours_old: int = 168,
     radius_miles: int = 50,
-    results_per_term: int = 30,
-    max_total: int = 20,
+    results_per_term: int = 40,
+    max_total: int = 50,
 ) -> list[dict[str, Any]]:
     """Returns up to `max_total` unique jobs. Failures in one term don't kill others."""
     terms = search_terms or DEFAULT_SEARCH_TERMS
